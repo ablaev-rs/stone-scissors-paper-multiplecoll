@@ -12,8 +12,19 @@ export default observer(function ControlRoom ({ followGame, sumPoints, roundPoin
 
   const [userName1] = useDoc('usersCollection', playerId1)
   const [userName2] = useDoc('usersCollection', playerId2)
-  name1 = userName1.name
-  name2 = userName2.name
+
+  if (userName1) {
+    name1 = userName1.name
+  } else {
+    name1 = 'Player 1'
+  }
+
+  if (userName2) {
+    name2 = userName2.name
+  } else {
+    name2 = 'Player 2'
+  }
+
 
   return pug`
     Text.textStyle Result Table

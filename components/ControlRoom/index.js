@@ -12,12 +12,20 @@ export default observer(function ControlRoom ({ followGame, $followGame, sumPoin
   let round = followGame.round
   let playerId1 = followGame.usersId[0]
   let playerId2 = followGame.usersId[1]
+  let answerPlayer1
+  let answerPlayer2
 
-  const [aboutPlayer1] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId1 })
-  const [aboutPlayer2] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId2 })
+  const [player1] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId1 })
+  const [player2] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId2 })
 
-  let answerPlayer1 = aboutPlayer1.answers
-  let answerPlayer2 = aboutPlayer2.answers
+  if (player1 && player2) {
+    answerPlayer1 = player1.answers
+    answerPlayer2 = player2.answers
+  } else {
+    answerPlayer1 = []
+    answerPlayer2 = []
+  }
+
 
   if ((answerPlayer1.length !== answerPlayer2.length) || ((answerPlayer1.length === 0) && (answerPlayer2.length === 0))) {
     disabledBtn = 'disabled'

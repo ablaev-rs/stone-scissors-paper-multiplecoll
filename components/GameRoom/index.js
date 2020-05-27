@@ -14,14 +14,22 @@ export default observer(function GameRoom ({ followGame, $followGame, sumPoints 
   let roundPoints = []
   let roundPointsUser1 = []
   let roundPointsUser2 = []
-  const [players1, $players1] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId1 })
-  const [players2, $players2] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId2 })
+  let answerPlayer1
+  let answerPlayer2
   const [selectedItem, setSelectedItem] = useState('Stone')
 
-  let answerPlayer1 = players1.answers
-  let answerPlayer2 = players2.answers
+  const [players1, $players1] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId1 })
+  const [players2, $players2] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId2 })
+  if (players1 && players2) {
+    answerPlayer1 = players1.answers
+    answerPlayer2 = players2.answers
+  } else {
+    answerPlayer1 = []
+    answerPlayer2 = []
+  }
 
   if (answerPlayer1.length === answerPlayer2.length && answerPlayer1.length !== 0 && answerPlayer2.length !== 0) {
+    let allPoints = []
     for (let i = 0; i < answerPlayer1.length; i++) {
       for (let j = 0; j < answerPlayer2.length; j++) {
         if (i === j) {
@@ -31,34 +39,37 @@ export default observer(function GameRoom ({ followGame, $followGame, sumPoints 
         }
       }
     }
+    allPoints.push(roundPointsUser1)
+    allPoints.push(roundPointsUser2)
+    console.log(allPoints)
   }
 
-  if ((players1.answers.length === 5) && (players2.answers.length === 5)) {
+  if ((answerPlayer1.length === 5) && (answerPlayer2.length === 5)) {
     gameOver = true
   }
 
   if (myId === playerId1) {
     if (gameOver) {
-      if (sumPoints(players1.answers) > sumPoints(players2.answers)) {
+      if (sumPoints(answerPlayer1) > sumPoints(answerPlayer2)) {
         message = 'You win!'
-      } else if (sumPoints(players1.answers) < sumPoints(players2.answers)) {
+      } else if (sumPoints(answerPlayer1) < sumPoints(answerPlayer2)) {
         message = 'You lose!'
       } else {
         message = 'Draw'
       }
-    } else if ((players1.answers.length > players2.answers.length) || ((players1.answers.length === followGame.round) && (players2.answers.length === followGame.round))) {
+    } else if ((answerPlayer1.length > answerPlayer2.length) || ((answerPlayer1.length === followGame.round) && (answerPlayer2.length === followGame.round))) {
       message = 'Wait please'
     }
   } else if (myId === playerId2) {
     if (gameOver) {
-      if (sumPoints(players1.answers) > sumPoints(players2.answers)) {
+      if (sumPoints(answerPlayer1) > sumPoints(answerPlayer2)) {
         message = 'You lose!'
-      } else if (sumPoints(players1.answers) < sumPoints(players2.answers)) {
+      } else if (sumPoints(answerPlayer1) < sumPoints(answerPlayer2)) {
         message = 'You win!'
       } else {
         message = 'Draw'
       }
-    } else if ((players1.answers.length < players2.answers.length) || ((players1.answers.length === followGame.round) && (players2.answers.length === followGame.round))) {
+    } else if ((answerPlayer1.length < answerPlayer2.length) || ((answerPlayer1.length === followGame.round) && (answerPlayer2.length === followGame.round))) {
       message = 'Wait please'
     }
   }
@@ -89,11 +100,11 @@ export default observer(function GameRoom ({ followGame, $followGame, sumPoints 
 
   function saveChoice () {
     if (myId === playerId1) {
-      let ans = players1.answers
+      let ans = answerPlayer1
       ans.push(selectedItem)
       $players1.set('answers', ans)
     } else if (myId === playerId2) {
-      let ans = players2.answers
+      let ans = answerPlayer2
       ans.push(selectedItem)
       $players2.set('answers', ans)
     } else {

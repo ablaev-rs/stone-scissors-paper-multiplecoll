@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, TextInput, Button, Text } from 'react-native'
-import { observer, useQuery, useValue, useSession, $root, useQueryDoc } from 'startupjs'
+import { observer, useQuery, useValue, useSession, $root } from 'startupjs'
 import './index.styl'
 import { } from '@startupjs/ui'
 import RoomItem from './RoomItem'
