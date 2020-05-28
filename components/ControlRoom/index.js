@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Button, Text } from 'react-native'
-import { observer, useQueryDoc, useDoc } from 'startupjs'
+import { observer, useQueryDoc, useDoc, emit } from 'startupjs'
 import './index.styl'
 import ResultTable from '../ResultTable'
 
@@ -59,6 +59,7 @@ export default observer(function ControlRoom () {
 
   function closeGameHandler () {
     $followGame.set('status', 'close')
+    emit('url', '/')
   }
 
   function sumPoints (points) {

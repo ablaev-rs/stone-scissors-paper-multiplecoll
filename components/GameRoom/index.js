@@ -48,9 +48,9 @@ export default observer(function GameRoom () {
 
   if (myId === playerId1) {
     if (gameOver) {
-      if (sumPoints(answerPlayer1) > sumPoints(answerPlayer2)) {
+      if (sumPoints(roundPointsUser1) > sumPoints(roundPointsUser2)) {
         message = 'You win!'
-      } else if (sumPoints(answerPlayer1) < sumPoints(answerPlayer2)) {
+      } else if (sumPoints(roundPointsUser1) < sumPoints(roundPointsUser2)) {
         message = 'You lose!'
       } else {
         message = 'Draw'
@@ -60,9 +60,9 @@ export default observer(function GameRoom () {
     }
   } else if (myId === playerId2) {
     if (gameOver) {
-      if (sumPoints(answerPlayer1) > sumPoints(answerPlayer2)) {
+      if (sumPoints(roundPointsUser1) > sumPoints(roundPointsUser2)) {
         message = 'You lose!'
-      } else if (sumPoints(answerPlayer1) < sumPoints(answerPlayer2)) {
+      } else if (sumPoints(roundPointsUser1) < sumPoints(roundPointsUser2)) {
         message = 'You win!'
       } else {
         message = 'Draw'
