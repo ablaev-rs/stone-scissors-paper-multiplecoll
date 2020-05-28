@@ -2,8 +2,9 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { observer, useQueryDoc } from 'startupjs'
 import './index.styl'
+import { sumPoints } from '../functions'
 
-export default observer(function ControlRoom ({ followGame, sumPoints, roundPointsUser1, roundPointsUser2 }) {
+export default observer(function ControlRoom ({ followGame, roundPointsUser1, roundPointsUser2 }) {
   let playerId1 = followGame.usersId[0]
   let playerId2 = followGame.usersId[1]
   let name1
