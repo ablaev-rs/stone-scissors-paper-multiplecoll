@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text } from 'react-native'
-import { observer, useDoc } from 'startupjs'
+import { observer, useQueryDoc } from 'startupjs'
 import './index.styl'
 
 export default observer(function ControlRoom ({ followGame, sumPoints, roundPointsUser1, roundPointsUser2 }) {
@@ -10,8 +10,8 @@ export default observer(function ControlRoom ({ followGame, sumPoints, roundPoin
   let name2
   let roundsNum = 1
 
-  const [userName1] = useDoc('users', playerId1)
-  const [userName2] = useDoc('users', playerId2)
+  const [userName1] = useQueryDoc('users', { userid: playerId1 })
+  const [userName2] = useQueryDoc('users', { userid: playerId2 })
 
   if (userName1) {
     name1 = userName1.name

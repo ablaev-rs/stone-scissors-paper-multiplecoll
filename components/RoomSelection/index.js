@@ -20,7 +20,7 @@ export default observer(function RoomSelection ({ style }) {
 
   function saveNameHandler () {
     setUserName(enterName)
-    $root.add('users', { id: myId, name: enterName })
+    $root.add('users', { userid: myId, name: enterName })
   }
   /* / */
 
