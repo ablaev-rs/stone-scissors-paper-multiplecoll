@@ -1,22 +1,25 @@
 import React from 'react'
 import { View, Button, Text } from 'react-native'
-import { observer, useQueryDoc } from 'startupjs'
+import { observer, useQueryDoc, useDoc } from 'startupjs'
 import './index.styl'
 import ResultTable from '../ResultTable'
 
-export default observer(function ControlRoom ({ followGame, $followGame, sumPoints, getPoints }) {
+export default observer(function ControlRoom () {
   let roundPointsUser1 = []
   let roundPointsUser2 = []
-  let disabledBtn = 'disabled'
-  let round = followGame.round
-  let playerId1 = followGame.usersId[0]
-  let playerId2 = followGame.usersId[1]
   let answerPlayer1
   let answerPlayer2
   let point
+  let disabledBtn = 'disabled'
 
-  const [player1] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId1 })
-  const [player2] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId2 })
+  const path = (window.location.pathname).split('/')
+  const gameId = path[2]
+  const [followGame, $followGame] = useDoc('games', gameId)
+  let round = followGame.round
+  let playerId1 = followGame.usersId[0]
+  let playerId2 = followGame.usersId[1]
+  const [player1] = useQueryDoc('players', { gameId: followGame.id, userId: playerId1 })
+  const [player2] = useQueryDoc('players', { gameId: followGame.id, userId: playerId2 })
 
   if (player1 && player2) {
     answerPlayer1 = player1.answers
@@ -56,6 +59,38 @@ export default observer(function ControlRoom ({ followGame, $followGame, sumPoin
 
   function closeGameHandler () {
     $followGame.set('status', 'close')
+  }
+
+  function sumPoints (points) {
+    let sum = 0
+    for (let i = 0; i < points.length; i++) {
+      sum = sum + points[i]
+    }
+    return sum
+  }
+
+  function getPoints (choise1, choise2) {
+    let roundPoints = []
+    if ((choise1 === 'Stone' && choise2 === 'Stone') || (choise2 === 'Stone' && choise1 === 'Stone')) {
+      roundPoints.push(0, 0)
+    } else if ((choise1 === 'Scissors' && choise2 === 'Scissors') || (choise2 === 'Scissors' && choise1 === 'Scissors')) {
+      roundPoints.push(0, 0)
+    } else if ((choise1 === 'Paper' && choise2 === 'Paper') || (choise2 === 'Paper' && choise1 === 'Paper')) {
+      roundPoints.push(0, 0)
+    } else if (choise1 === 'Stone' && choise2 === 'Scissors') {
+      roundPoints.push(1, 0)
+    } else if (choise1 === 'Scissors' && choise2 === 'Stone') {
+      roundPoints.push(0, 1)
+    } else if (choise1 === 'Stone' && choise2 === 'Paper') {
+      roundPoints.push(0, 1)
+    } else if (choise1 === 'Paper' && choise2 === 'Stone') {
+      roundPoints.push(1, 0)
+    } else if (choise1 === 'Scissors' && choise2 === 'Paper') {
+      roundPoints.push(1, 0)
+    } else if (choise1 === 'Paper' && choise2 === 'Scissors') {
+      roundPoints.push(0, 1)
+    }
+    return roundPoints
   }
 
   return pug`

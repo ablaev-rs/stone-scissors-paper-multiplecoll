@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
 import { View, TextInput, Button, Text } from 'react-native'
-import { observer, useQuery, useValue, useSession, $root } from 'startupjs'
+import { observer, useQuery, useValue, useSession, $root, emit } from 'startupjs'
 import './index.styl'
 import { } from '@startupjs/ui'
 import RoomItem from './RoomItem'
 
 export default observer(function RoomSelection ({ style }) {
-  const [games, $games] = useQuery('gamesCollection', {})
+  const [games, $games] = useQuery('games', {})
   if (!games) throw $games.addSelf()
   const [myId] = useSession('userId')
 
-  /* SAVE USERNAME AND CREATE USERSCOLLECION */
+  /* SAVE USERNAME AND CREATE USERS COLLECION */
   let [enterName, onChangeEnterName] = useState('')
   let [userName, setUserName] = useState('')
 
@@ -20,7 +20,7 @@ export default observer(function RoomSelection ({ style }) {
 
   function saveNameHandler () {
     setUserName(enterName)
-    $root.add('usersCollection', { id: myId, name: enterName })
+    $root.add('users', { id: myId, name: enterName })
   }
   /* / */
 
@@ -44,9 +44,8 @@ export default observer(function RoomSelection ({ style }) {
 
   function createGameHandler () {
     $createGame.set('creatorId', myId)
-    $root.add('gamesCollection', createGame)
+    $root.add('games', createGame)
   }
-
   /* / */
 
   /* ENTER THE GAME */
@@ -58,7 +57,7 @@ export default observer(function RoomSelection ({ style }) {
   }
 
   async function joinGameHandler () {
-    const $game = $root.scope('gamesCollection.' + selectedGame)
+    const $game = $root.scope('games.' + selectedGame)
     $game.subscribe()
     const game = $game.get()
     setSelectedGameId(game.id)
@@ -66,7 +65,7 @@ export default observer(function RoomSelection ({ style }) {
     $createPlayer.set('creatorId', game.creatorId)
     $createPlayer.set('userId', myId)
     $createPlayer.set('gameId', game.id)
-    $root.add('playersCollection', createPlayer)
+    $root.add('players', createPlayer)
 
     if (!game) {
       alert('The game does not exist')
@@ -76,6 +75,7 @@ export default observer(function RoomSelection ({ style }) {
       let followUsers = game.usersId
       followUsers.push(myId)
       $game.set('usersId', followUsers)
+      emit('url', '/games/' + game.id)
     }
   }
   /* / */

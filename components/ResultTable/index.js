@@ -10,8 +10,8 @@ export default observer(function ControlRoom ({ followGame, sumPoints, roundPoin
   let name2
   let roundsNum = 1
 
-  const [userName1] = useDoc('usersCollection', playerId1)
-  const [userName2] = useDoc('usersCollection', playerId2)
+  const [userName1] = useDoc('users', playerId1)
+  const [userName2] = useDoc('users', playerId2)
 
   if (userName1) {
     name1 = userName1.name
