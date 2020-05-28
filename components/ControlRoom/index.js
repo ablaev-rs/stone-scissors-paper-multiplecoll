@@ -4,8 +4,7 @@ import { observer, useQueryDoc } from 'startupjs'
 import './index.styl'
 import ResultTable from '../ResultTable'
 
-export default observer(function ControlRoom ({ followGame, $followGame, sumPoints }) {
-  let roundPoints = []
+export default observer(function ControlRoom ({ followGame, $followGame, sumPoints, getPoints }) {
   let roundPointsUser1 = []
   let roundPointsUser2 = []
   let disabledBtn = 'disabled'
@@ -14,6 +13,7 @@ export default observer(function ControlRoom ({ followGame, $followGame, sumPoin
   let playerId2 = followGame.usersId[1]
   let answerPlayer1
   let answerPlayer2
+  let point
 
   const [player1] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId1 })
   const [player2] = useQueryDoc('playersCollection', { gameId: followGame.id, userId: playerId2 })
@@ -25,7 +25,6 @@ export default observer(function ControlRoom ({ followGame, $followGame, sumPoin
     answerPlayer1 = []
     answerPlayer2 = []
   }
-
 
   if ((answerPlayer1.length !== answerPlayer2.length) || ((answerPlayer1.length === 0) && (answerPlayer2.length === 0))) {
     disabledBtn = 'disabled'
@@ -41,36 +40,12 @@ export default observer(function ControlRoom ({ followGame, $followGame, sumPoin
     for (let i = 0; i < answerPlayer1.length; i++) {
       for (let j = 0; j < answerPlayer2.length; j++) {
         if (i === j) {
-          getPoints(answerPlayer1[i], answerPlayer2[j])
-          roundPointsUser1.push(roundPoints[0])
-          roundPointsUser2.push(roundPoints[1])
+          point = getPoints(answerPlayer1[i], answerPlayer2[j])
+          roundPointsUser1.push(point[0])
+          roundPointsUser2.push(point[1])
         }
       }
     }
-  }
-
-  function getPoints (choise1, choise2) {
-    roundPoints = []
-    if ((choise1 === 'Stone' && choise2 === 'Stone') || (choise2 === 'Stone' && choise1 === 'Stone')) {
-      roundPoints.push(0, 0)
-    } else if ((choise1 === 'Scissors' && choise2 === 'Scissors') || (choise2 === 'Scissors' && choise1 === 'Scissors')) {
-      roundPoints.push(0, 0)
-    } else if ((choise1 === 'Paper' && choise2 === 'Paper') || (choise2 === 'Paper' && choise1 === 'Paper')) {
-      roundPoints.push(0, 0)
-    } else if (choise1 === 'Stone' && choise2 === 'Scissors') {
-      roundPoints.push(1, 0)
-    } else if (choise1 === 'Scissors' && choise2 === 'Stone') {
-      roundPoints.push(0, 1)
-    } else if (choise1 === 'Stone' && choise2 === 'Paper') {
-      roundPoints.push(0, 1)
-    } else if (choise1 === 'Paper' && choise2 === 'Stone') {
-      roundPoints.push(1, 0)
-    } else if (choise1 === 'Scissors' && choise2 === 'Paper') {
-      roundPoints.push(1, 0)
-    } else if (choise1 === 'Paper' && choise2 === 'Scissors') {
-      roundPoints.push(0, 1)
-    }
-    return roundPoints
   }
 
   function nextRoundHandler () {

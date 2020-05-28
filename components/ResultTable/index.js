@@ -25,7 +25,6 @@ export default observer(function ControlRoom ({ followGame, sumPoints, roundPoin
     name2 = 'Player 2'
   }
 
-
   return pug`
     Text.textStyle Result Table
 
