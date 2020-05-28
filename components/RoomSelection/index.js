@@ -26,16 +26,12 @@ export default observer(function RoomSelection ({ style }) {
 
   /* CREATE ROOM */
   const defaultGame = {
-    creatorId: '',
     usersId: [],
     status: 'open',
     round: 1
   }
 
   const defaultPlayer = {
-    gameId: '',
-    creatorId: '',
-    userId: '',
     answers: []
   }
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Button, Text } from 'react-native'
 import { observer, useQueryDoc, useDoc, emit } from 'startupjs'
 import './index.styl'
-import getPoints from '../functions'
+import { getPoints } from '../functions'
 import ResultTable from '../ResultTable'
 
 export default observer(function ControlRoom () {
