@@ -1,14 +1,15 @@
 import React, { useState } from 'react'
 import { View, Button, Text } from 'react-native'
-import { observer, useQueryDoc, useSession, useDoc } from 'startupjs'
+import { observer, useQueryDoc, useSession, useDoc, useLocal } from 'startupjs'
 import { Radio, Alert } from '@startupjs/ui'
 import './index.styl'
 import { getPoints, sumPoints } from '../functions'
 import ResultTable from '../ResultTable'
 
 export default observer(function GameRoom () {
-  const path = (window.location.pathname).split('/')
-  const gameId = path[2]
+  const [params] = useLocal('$render.params')
+  const gameId = params.gameId
+
   const [myId] = useSession('userId')
   const [game] = useDoc('games', gameId)
   let playerId1 = game.userIds[0]
@@ -21,11 +22,11 @@ export default observer(function GameRoom () {
   let answerPlayer2
   const [selectedItem, setSelectedItem] = useState('Stone')
 
-  const [players1, $players1] = useQueryDoc('players', { gameId: game.id, userId: playerId1 })
-  const [players2, $players2] = useQueryDoc('players', { gameId: game.id, userId: playerId2 })
-  if (players1 && players2) {
-    answerPlayer1 = players1.answers
-    answerPlayer2 = players2.answers
+  const [player1, $player1] = useQueryDoc('players', { gameId: game.id, userId: playerId1 })
+  const [player2, $player2] = useQueryDoc('players', { gameId: game.id, userId: playerId2 })
+  if (player1 && player2) {
+    answerPlayer1 = player1.answers
+    answerPlayer2 = player2.answers
   } else {
     answerPlayer1 = []
     answerPlayer2 = []
@@ -77,11 +78,11 @@ export default observer(function GameRoom () {
     if (myId === playerId1) {
       let ans = answerPlayer1
       ans.push(selectedItem)
-      $players1.set('answers', ans)
+      $player1.set('answers', ans)
     } else if (myId === playerId2) {
       let ans = answerPlayer2
       ans.push(selectedItem)
-      $players2.set('answers', ans)
+      $player2.set('answers', ans)
     } else {
       console.log('mistake')
     }

@@ -6,18 +6,15 @@ import { getPoints } from '../functions'
 import ResultTable from '../ResultTable'
 
 export default observer(function ControlRoom () {
+  const [params] = useLocal('$render.params')
+  const gameId = params.gameId
+
   let roundPointsUser1 = []
   let roundPointsUser2 = []
   let answerPlayer1
   let answerPlayer2
   let point
   let disabledBtn = 'disabled'
-
-  const path = (window.location.pathname).split('/')
-  const gameId = path[2]
-
-  const [params] = useLocal('$render.params')
-  console.log('params', params)
 
   const [game, $game] = useDoc('games', gameId)
   let round = game.round
