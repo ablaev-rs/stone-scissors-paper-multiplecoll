@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { View, Button, Text } from 'react-native'
-import { observer, useQueryDoc, useSession, useDoc, useLocal } from 'startupjs'
+import { observer, useQueryDoc, useSession, useDoc, useLocal, useQuery } from 'startupjs'
 import { Radio, Alert } from '@startupjs/ui'
 import './index.styl'
 import { getPoints, sumPoints } from '../functions'
@@ -44,7 +44,7 @@ export default observer(function GameRoom () {
     }
   }
 
-  if ((answerPlayer1.length === 5) && (answerPlayer2.length === 5)) {
+  if (game.status === 'close') {
     gameOver = true
   }
 

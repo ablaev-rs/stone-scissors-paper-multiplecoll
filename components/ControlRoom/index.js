@@ -15,6 +15,7 @@ export default observer(function ControlRoom () {
   let answerPlayer2
   let point
   let disabledBtn = 'disabled'
+  const countRounds = 5
 
   const [game, $game] = useDoc('games', gameId)
   let round = game.round
@@ -61,15 +62,15 @@ export default observer(function ControlRoom () {
 
   function closeGameHandler () {
     $game.set('status', 'close')
-    emit('url', '/')
+    disabledBtn = 'disabled'
   }
 
   return pug`
     View.root
       Text.textStyle Game control. Round #{round}
      
-      if ((answerPlayer1.length === 5) && (answerPlayer2.length === 5))
-        Button(title = 'Close Game' onPress = closeGameHandler)
+      if ((answerPlayer1.length === countRounds) && (answerPlayer2.length === countRounds))
+        Button(title = 'Close Game' onPress = closeGameHandler disabled = disabledBtn)
       else
         Button(title = 'Next Round' onPress = nextRoundHandler disabled = disabledBtn)
 
