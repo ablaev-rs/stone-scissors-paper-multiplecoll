@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Button, Text } from 'react-native'
-import { observer, useQueryDoc, useDoc, emit } from 'startupjs'
+import { observer, useQueryDoc, useDoc, emit, useLocal } from 'startupjs'
 import './index.styl'
 import { getPoints } from '../functions'
 import ResultTable from '../ResultTable'
@@ -15,12 +15,16 @@ export default observer(function ControlRoom () {
 
   const path = (window.location.pathname).split('/')
   const gameId = path[2]
-  const [followGame, $followGame] = useDoc('games', gameId)
-  let round = followGame.round
-  let playerId1 = followGame.usersId[0]
-  let playerId2 = followGame.usersId[1]
-  const [player1] = useQueryDoc('players', { gameId: followGame.id, userId: playerId1 })
-  const [player2] = useQueryDoc('players', { gameId: followGame.id, userId: playerId2 })
+
+  const [params] = useLocal('$render.params')
+  console.log('params', params)
+
+  const [game, $game] = useDoc('games', gameId)
+  let round = game.round
+  let playerId1 = game.userIds[0]
+  let playerId2 = game.userIds[1]
+  const [player1] = useQueryDoc('players', { gameId: game.id, userId: playerId1 })
+  const [player2] = useQueryDoc('players', { gameId: game.id, userId: playerId2 })
 
   if (player1 && player2) {
     answerPlayer1 = player1.answers
@@ -32,9 +36,9 @@ export default observer(function ControlRoom () {
 
   if ((answerPlayer1.length !== answerPlayer2.length) || ((answerPlayer1.length === 0) && (answerPlayer2.length === 0))) {
     disabledBtn = 'disabled'
-  } else if ((answerPlayer1.length < followGame.round) && (answerPlayer2.length < followGame.round)) {
+  } else if ((answerPlayer1.length < game.round) && (answerPlayer2.length < game.round)) {
     disabledBtn = 'disabled'
-  } else if ((answerPlayer1.length === followGame.round) && (answerPlayer2.length === followGame.round)) {
+  } else if ((answerPlayer1.length === game.round) && (answerPlayer2.length === game.round)) {
     disabledBtn = ''
   } else {
     disabledBtn = ''
@@ -54,12 +58,12 @@ export default observer(function ControlRoom () {
 
   function nextRoundHandler () {
     round++
-    $followGame.set('round', round)
+    $game.set('round', round)
     disabledBtn = 'disabled'
   }
 
   function closeGameHandler () {
-    $followGame.set('status', 'close')
+    $game.set('status', 'close')
     emit('url', '/')
   }
 
@@ -73,7 +77,7 @@ export default observer(function ControlRoom () {
         Button(title = 'Next Round' onPress = nextRoundHandler disabled = disabledBtn)
 
       ResultTable(
-        followGame=followGame 
+        game=game 
         roundPointsUser1=roundPointsUser1 
         roundPointsUser2=roundPointsUser2
         )

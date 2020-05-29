@@ -10,9 +10,9 @@ export default observer(function GameRoom () {
   const path = (window.location.pathname).split('/')
   const gameId = path[2]
   const [myId] = useSession('userId')
-  const [followGame] = useDoc('games', gameId)
-  let playerId1 = followGame.usersId[0]
-  let playerId2 = followGame.usersId[1]
+  const [game] = useDoc('games', gameId)
+  let playerId1 = game.userIds[0]
+  let playerId2 = game.userIds[1]
   let gameOver = false
   let message
   let roundPointsUser1 = []
@@ -21,8 +21,8 @@ export default observer(function GameRoom () {
   let answerPlayer2
   const [selectedItem, setSelectedItem] = useState('Stone')
 
-  const [players1, $players1] = useQueryDoc('players', { gameId: followGame.id, userId: playerId1 })
-  const [players2, $players2] = useQueryDoc('players', { gameId: followGame.id, userId: playerId2 })
+  const [players1, $players1] = useQueryDoc('players', { gameId: game.id, userId: playerId1 })
+  const [players2, $players2] = useQueryDoc('players', { gameId: game.id, userId: playerId2 })
   if (players1 && players2) {
     answerPlayer1 = players1.answers
     answerPlayer2 = players2.answers
@@ -56,7 +56,7 @@ export default observer(function GameRoom () {
       } else {
         message = 'Draw'
       }
-    } else if ((answerPlayer1.length > answerPlayer2.length) || ((answerPlayer1.length === followGame.round) && (answerPlayer2.length === followGame.round))) {
+    } else if ((answerPlayer1.length > answerPlayer2.length) || ((answerPlayer1.length === game.round) && (answerPlayer2.length === game.round))) {
       message = 'Wait please'
     }
   } else if (myId === playerId2) {
@@ -68,7 +68,7 @@ export default observer(function GameRoom () {
       } else {
         message = 'Draw'
       }
-    } else if ((answerPlayer1.length < answerPlayer2.length) || ((answerPlayer1.length === followGame.round) && (answerPlayer2.length === followGame.round))) {
+    } else if ((answerPlayer1.length < answerPlayer2.length) || ((answerPlayer1.length === game.round) && (answerPlayer2.length === game.round))) {
       message = 'Wait please'
     }
   }
@@ -92,7 +92,7 @@ export default observer(function GameRoom () {
       if gameOver
         Text.textStyle Game Over
       else
-        Text.textStyle Round #{followGame.round}
+        Text.textStyle Round #{game.round}
         Text.textStyle Make your choice
 
         Radio.versions(
@@ -110,7 +110,7 @@ export default observer(function GameRoom () {
         Button.btn(title='Choose' onPress = saveChoice)
 
       ResultTable(
-        followGame=followGame
+        game=game
         roundPointsUser1=roundPointsUser1 
         roundPointsUser2=roundPointsUser2
         )

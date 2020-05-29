@@ -7,9 +7,9 @@ import RoomSelection from '../RoomSelection'
 export default observer(function MainComponent ({ style }) {
   const [myId] = useSession('userId')
 
-  const [isGameCreatedByMe] = useQueryDoc('games', { creatorId: myId, status: 'open' })
-  if (isGameCreatedByMe) {
-    emit('url', '/control/' + isGameCreatedByMe.id)
+  const [isCreator] = useQueryDoc('games', { creatorId: myId, status: 'open' })
+  if (isCreator) {
+    emit('url', '/control/' + isCreator.id)
   }
 
   return pug`

@@ -4,9 +4,9 @@ import { observer, useQueryDoc } from 'startupjs'
 import './index.styl'
 import { sumPoints } from '../functions'
 
-export default observer(function ControlRoom ({ followGame, roundPointsUser1, roundPointsUser2 }) {
-  let playerId1 = followGame.usersId[0]
-  let playerId2 = followGame.usersId[1]
+export default observer(function ControlRoom ({ game, roundPointsUser1, roundPointsUser2 }) {
+  let playerId1 = game.userIds[0]
+  let playerId2 = game.userIds[1]
   let name1
   let name2
   let roundsNum = 1

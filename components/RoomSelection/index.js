@@ -6,8 +6,7 @@ import { } from '@startupjs/ui'
 import RoomItem from './RoomItem'
 
 export default observer(function RoomSelection ({ style }) {
-  const [games, $games] = useQuery('games', {})
-  if (!games) throw $games.addSelf()
+  const [games] = useQuery('games', {})
   const [myId] = useSession('userId')
 
   /* SAVE USERNAME AND CREATE USERS COLLECION */
@@ -26,7 +25,7 @@ export default observer(function RoomSelection ({ style }) {
 
   /* CREATE ROOM */
   const defaultGame = {
-    usersId: [],
+    userIds: [],
     status: 'open',
     round: 1
   }
@@ -65,12 +64,12 @@ export default observer(function RoomSelection ({ style }) {
 
     if (!game) {
       alert('The game does not exist')
-    } else if (game.usersId.length === 2) {
+    } else if (game.userIds.length === 2) {
       alert('The room is full')
     } else {
-      let followUsers = game.usersId
+      let followUsers = game.userIds
       followUsers.push(myId)
-      $game.set('usersId', followUsers)
+      $game.set('userIds', followUsers)
       emit('url', '/games/' + game.id)
     }
   }
@@ -109,7 +108,7 @@ export default observer(function RoomSelection ({ style }) {
         if games.length
           each game in games
             View.room(key = game.id)
-              RoomItem(id=game.id status=game.status usersId=game.usersId)
+              RoomItem(id=game.id status=game.status userIds=game.userIds)
         else
           Text.additinalTextStyle Sorry, nothing found
             
